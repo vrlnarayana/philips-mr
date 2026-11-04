@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard Orchestrator Spec Prompt</title>
+<style>
+:root{
+  --bg:#ffffff; --panel:#f4f5f7; --panel2:#fdeee2; --ink:#14181b; --muted:#5d6670; --line:#e3e5e8;
+  --or:#ff6600; --deep:#e84103; --slate:#2e4552; --code-bg:#1f2d36; --code-ink:#f4f5f7; --field:#ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1417; --panel:#182128; --panel2:#2a1d14; --ink:#eef1f3; --muted:#a3adb5; --line:#2b363e;
+    --or:#ff7a24; --deep:#ff8a4a; --slate:#9fb6c4; --code-bg:#0a1014; --code-ink:#e8edf0; --field:#121a1f;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1417; --panel:#182128; --panel2:#2a1d14; --ink:#eef1f3; --muted:#a3adb5; --line:#2b363e;
+  --or:#ff7a24; --deep:#ff8a4a; --slate:#9fb6c4; --code-bg:#0a1014; --code-ink:#e8edf0; --field:#121a1f;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Segoe UI",Calibri,Arial,sans-serif}
+header{padding:22px 16px 10px;max-width:1240px;margin:0 auto;display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+header img{height:30px}
+.logo-dark{display:none}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .logo-light{display:none}:root:not([data-theme="light"]) .logo-dark{display:inline}}
+:root[data-theme="dark"] .logo-light{display:none} :root[data-theme="dark"] .logo-dark{display:inline}
+.kicker{color:var(--or);font:700 12px/1.2 Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase}
+h1{margin:4px 0 2px;font:700 28px/1.2 Arial,sans-serif}
+.sub{color:var(--muted);margin:0}
+main{max-width:1240px;margin:0 auto;padding:8px 16px 40px}
+.steps{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 18px}
+.steps div{background:var(--panel);border-radius:10px;padding:10px 12px;flex:1 1 200px;font-size:13.5px}
+.steps b{color:var(--or);margin-right:6px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:22px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+section.card{background:var(--panel);border-radius:12px;padding:16px}
+h2{font:700 17px/1.3 Arial,sans-serif;margin:0 0 4px}
+h3{font:700 12px/1.3 Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);margin:18px 0 8px}
+label{display:block;font-weight:600;font-size:13.5px;margin:10px 0 4px}
+.hint{font-weight:400;color:var(--muted);font-size:12.5px}
+input,textarea,select{width:100%;background:var(--field);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:14px/1.45 "Segoe UI",Calibri,Arial,sans-serif}
+textarea{min-height:84px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--or);outline-offset:0;border-color:transparent}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:560px){.row2{grid-template-columns:1fr}}
+.out{position:sticky;top:12px}
+@media (max-width:900px){.out{position:static}}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tabs button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 12px;font:600 13px Arial,sans-serif;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--or);border-color:var(--or);color:#fff}
+.where{font-size:13px;color:var(--muted);margin:0 0 8px}
+.where b{color:var(--deep)}
+pre{background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:14px;margin:0;white-space:pre-wrap;word-wrap:break-word;font:12.5px/1.55 Consolas,"Courier New",monospace;max-height:64vh;overflow:auto}
+.actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.btn{border:0;border-radius:8px;padding:9px 14px;font:700 13px Arial,sans-serif;cursor:pointer;background:var(--or);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.note{background:var(--panel2);border-radius:10px;padding:10px 12px;font-size:13.5px;margin-top:12px}
+.note b{color:var(--deep)}
+footer{max-width:1240px;margin:0 auto;padding:0 16px 28px;color:var(--muted);font-size:12px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--slate);color:#fff;padding:8px 14px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="kicker">Agent Creation Kit · Use case 9 of 9</div>
+    <h1>Dashboard Orchestrator — Spec Prompt Builder</h1>
+    <p class="sub">Fill in your team’s details. The prompts on the right update as you type — copy them into ChatGPT and the Codex app.</p>
+  </div>
+  <div>
+    <img class="logo-light" alt="UNext" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAABkCAYAAACrUKoaAAAYvUlEQVR42u2deZxcRbXHv3V7m5lsExIkIgjkkbAEVJaw+8AguOHHgCvgE+UpIBIiiaBAWMIeCCAosigqKvjABZUlyiKIaEKCCvgSDFuEgEkIZGGSSWamu8s/Tk0Y4sz0dqr7dnd9P5/rR+DO7Xur+546deqc34FAIBBobv4EWMXjKSChcWNR+G4CgUAgngQDHQgEAsFABwKBQCAY6EAgEAgGOhAIBALBQAcCgUAw0IFAIBAIBjoQCAQCwUAHAoFAMNCBQCAQCAY6EAgEgoEOBAKBQDDQgUAgEBCSYQgCgUEZAbwNGANsBYwC2oE2IAMYIA9sBNYBq4GVwApgufv/G8IwBoKBrj0GSNXhfef7HM1MC7ATsDcwEdgN2M4Z5dYyrtfhDPVzwN+Ax4C/AkvDqxKLd9V6urYFcio3aXfb6gGsklEx9JCPjjeLlr0Uh2/Ankc7KXMLEe0Vmx4D5NhIiz3OnMHyAc7aFfiZO7ueyLmjE1gLvAq8CDwLLAaeB15v0Bd1OPBe4AjgYGCcZ8dljTPW9wL3AE8rGZtzgQM9TbLfBH5bo+/nYmAvD7/3qW7iBNGDPkDx+m8Av9eYAJJgDiVSsifWgrFDYvTypbHRISQYXrHJlIVslq7cYJ5UqzPSjYR1XuDfgYeA+4AngWydP9cewGeBycDYKn5uO/A+d1wAPALcAtztPO5yv6PfAeegJBS/GeOBfZFwTTV5P3CWh+veAizxPOlP1rhQBLYLa1E5sF0YY2PzCqax5OmiB1SOPF1kB50VbQOGCQwSfz0MuMQt0/8MTAPeUYfPcyjwK2Cue4axNbyXVuADwG3AfOA0YIsyrzXPedE+2MF5stWkBbjMw3WfB76mFYLwTYRxr6DWESfWodvIxhIQD20icCUST50NbF8H970/cBdwP/AxZIMvTuwMXOUmwJOcgSqVq9zE44PjgQ9XcTxO8hDayLtJ8LV6edka20ATDLRn3gZMd97fmcCQGN7jGOA6F545gvjvD+wIXA/8wS3xS2EjMAVY72li/mYFHn4pbOsptPFDN0nXDRHGonrEcYVuFY/YOV6xYEsX/ngI3c2WSjkK2QA6uQ6/uH2AOcC1SNy6WP4CzPJ0T+OAC6vw7DPdb0qTFz0Z/eBBx8aDDhRiogshfLXG99EGXA38nNrGmCsl6Tzi3yOpf8Uy24VKfHACcLjHZz4Y+B8PVmA6stnd5AY6bn5KXvkIFGscb6S8OKrG8vguN0mYBhnTPdzEd0yR528ATsVPgUzShTraPVw7g2wMaqc53gr8oh6/eA8hju7G9aCDF12qp3UbMKyKn7k7kgY4qQHHsx34EXB6kefPB67wdC+7AOd5uO7/AvspX/Nl4Ov1+qVHRKB6xC7EoRyD3hgsbwkc6Yx0NTYP90QKP3Zu4PFMAJcD5xd5/izgcU/38hUkl1uLrZE8bm3OAP5Vvwa60WPQ+eBB15gjgO/itzpvd+DXLrzRDJwHnF3EeZ1IDNuHW5FCNjCHK13vXCTjRpM7gJ/W8xctPm/YJAwG2i9HIzvzPngnEl/cpsnG9ELgS0WcNw/JWffBbsAMhescAHxB+d6WIwUpdY1+DDodDHSgX76BUvlrH4YCP0HSv5oNA1xTZJjhUkT/wwdTES2TSjzxWehbjm/QAKJUTZBmp50HHahgtfYtJNaoxRUVGod6pxX4PoVL7te7UEeXh3tIu1DH0DL//jjgIOV7+hWyodoAL03Igw4edPXYBr1Ch2OQcuBmZ3s38RXaov8Tkh7ng/cglaSlshXFb3gWy0pEY6Uh3takhCa0Fl02XrnC69z8rmVcg4HW4HPAzYjgUrlsi7+4aqFf1HKk4GE1svkWIVkqo5zB2YrqB/qOdOP6wwLnXQR8CHiXh3uYhijylaIFMgN9wa2z8atUV2UDHSl6vrEzYEOBbsgbnXvL40fMsblIIulUH67gFzML/R3/gXgOKbl+AJFcXU7/BSAGyfneFiksOQxRzquW4t9FiGbz8gITzBSk6EV7EmlxoY6DkeyRQuxDcZucpXAPEvKJy9pdw4OmceqtBjKqGr0T+jY2iv8TLwEWImL7Szfz9oY6L28sol29CzCyyvd4GKIuV44X/QHg01W4x0dd6GAOxek0W0SofaE7fuK86o8iWiATPd/vO1yYYWqB8x5xhtRHhsPeSN7x+QXtjlQMatYdr0KU6uIgI/occCwK8QR9Ax3HLA6t+SzeIY7FSN7n3c5AFKtotg2y0XYMorFQjW8wAXy5DAOdRkTufZZELXUe/q1U3pTgdRd2uA1pDnAekhboiy8CN7nvfzAuBD6IpMlpc7rzZBcMcs6x6Ba5gORRPxuTd7ETqeSsGOU0uxiarcbfJHzWLRUnuh/pfEqTm3wZSeb/KLKbfmeV7vsjZSz/P+6Wxr64x01Wt6DbMabbLb0PRFqi+aKN4jbr3kC0Ono83cO1DKzDMhr9nPj7Ee2XuGBQCoaGNLv6TrO7Hkny/x7lt0vqywJEovM4/Iuaj6Q0Afg0fgsPrnPP/qLHz3gZ+IwLAfia7j+OVFYW4iH3zD7YD1GP648zkUa8Wqx1YZ16b8HWpAa6MUu9NyJiRCd7MqQ/QmK9z3l+jo+VcO7hiN6GD64BTqE6Sl9550FOwU/OU4sLHxXD+eg0rR3IEO+x2b/bo4R7K5aZHp8hBgY6sqgeIcThmy7g84i+hU/+iuhovODxM/aleGH2Ez3dw88H8fZ8ch3+BOQ/iWwEF+N9nurJ+xziQh29G4EJZGOwVfEzHga+TQPT+HrQjWegTwdur9JnLXZL8rWerj8aKXIoxDj8SIg+6zy6Wu38z8KPmM/oElYnDyChMh8cxJtZJZ9CV+i/w127hwYmxKDrS270DiT1q5osQHQNfHrRhTgK2XzSDjVMo/YNRKfjRw7z0yW8kee5ydgHZyO9FbX1oy8GnqLBafyu3o3TUWUVtRMe/65bTvpgj4K/UX2RJYB7kZTEWrMM0Xj2MfHtUOS5q5036mMlMRzRxthJ8Zo+y9bjaKAbuWlsw4Q3bgT+WaPPziGVaj6mqPEMrhW9Y5FhkFKfZ1aMfqG3IBkemgwBDinh/N8hOdQ+0GzYsB6Jm3fRBIQQR32k2XXgf1OwEA+jlHy/GWOALQb57/+Nfm/DeVSmBaLNGuCXHq77/hLPn4H/zJ1KmYVsYDcFEQn02l0lCHrQfniI2gvA5JDqOm1GIJtaA/E+D595G/FrAXyXh2vuXeLktspjqEOD+UjH8qZBr5Iw6g1xxGzl0RgG+jcxGc370N8mTTFwql0G2Ev58zrdcj5uPIn+huV2iBxpKdxLfASH+rIRf53KQ4gjGOiy6Y7RcvwF/Oz2jxrg32+LbtUZwCLiKUf5mof7SiNiWKVyFvB8zMZnNvAYTUaIQcc/zW4ptdsc3Jys8/R8hDn6Yyf0488LYhje6HUlXvJw3QllThanxWic/oYUuTQdodQ7/h70kpgt6xZ5uOZAOc67ePisuTF+H33kQ5fbr/Eu4AcxGJMuF9pYTxOSVEuNi6umtKZxrY2BfjFmI+rDm88oG5fBmIx+2p4WB3q45rYV/O1ZSNOB7Ws4Jtcg2txNSVJNWbdXFD9uHUfq30CviNmIvuplJdc/23n4rKOa7B3fEskzz5b5XU9D9EqiGtz7/yP5901LiEGXdIB+SLQga2I2oh1VmqoSFCf4ExicEVRWJn8n8OMa3HePC210NPOXpyzYH8NKQs0y79pkh3bHbES7qc7mUSvQHuxrxbQpeBXfwM8G5mB8B8n/b2oaX4tj8zBH/W0SZpv0t9mKbolws5JWMNDLEVGnar0B/6BwX8NgoBsjxBHVe5qdbdLfZgs1iCc1IAl0doZ+jp9K0v4ckqnEL7QXDLQ389bYPQkblQyDiygFisOgt8F3Bv6zim5CKlYD9MagNTuqBMH+gA5J4pcTVI9o/nKX4VcLYxXStT0QPOhgoOvA8wtUTg69fYwMftMURyBNbwPNY6Abuqt3oxuWfBiGiulBT8FsCn7UBXtJIHnP48PX1jfE0chpdr2vef13VGk2uomv7GU9sQGdre1dEb1o34xEqgdDeCuEOEKII8Z0Eb8c8HrkDSrXckkCVzOwqJU2HwS+FL66EOKot6axzeb5bQjDUDGvKUx0X0S3I3cxXAT8VzDQugbakIyRmd5oIwxR8KDrkk7n/QUqY1mFfz8WuLAG9z0KaQwbNfOXl5ROKGrXS2FsW2yeri2dpiuXxphgXOuPbvQ7jOSQ5ruvN9E4VqIEZ4ArGbwlmU+OAI4HvtfEBposWtnLCQy5GAnc2PyWWNOmZpyDka822p2uI+AG4O9haIviWESetZZcAjxIPLvgVCHEge0mUgpxJABjdonN0yWy40mYREizq1u02y4ZpEtLoDDvQDpo15otgato0rz4CEOnXoqdBWP3i4+BNvuGLI665mkP15wQhrUoLgO2jsm9TAY+15wGOmHXqHnQcsUD7HEj2mse3TiBFIn8JHLBQNe5gdbOhd47DGtBjnThjbhNGO9swhAHK1QNdJKtyXRPqr333DIRYyaQDQa6jnkB/Y4yexJ0pgdjNLIxGLeQwpiY3pf3EMdLRM5UV3q8qZt1oq31QFrzJYxJkDeoHiEPupqsQdoeabI1sG8Y2gG5ENghpvf2CeCYJjPQ9hnVUu+8hQSHckLmkJrZ5pNTE4jsJ+khVBLWP494uOanw7D2y+FIUUqcuRzYpokMtFmIRbeaMEGCKLrYnke6Jk+VT1xE0gyhx9hgoOueh9BXQZncTC95kYxAyrnjrsG9tTPSTUESm3saEh1EDFMzQHkgzf682nI6bLy4ut5z5ngiM5kc0BPppsZZ4ikI1dg8gcSid1S85kjgy8DZMXi+ScA45enfAOuB2xE1u2I4BxFE0uJRRObUx0r6aODX7vka3ECP6X6RlS3/JMHuqvvleSDBOfbL6SfM9d33VMU4n9K6D9grMVZ+7j3KFYTyTIHq0gnMQaQuNTkZ+CHwbA2f7e3OyPio1PsDcFuR5x4InKL42T3ANKRUfwEwzMPzzUbCX8uU3mxNersBVWxRIzOTbiIelyITdEWTIjKkzC325JaDvBvnKeldMfZ2Em6HPm+g24QYdGNwh4eXqB0pgKil1sM5+Cuj/kmRY9aGyHtq9kL6sTPMixHRIx9sg14hjfbW/xZak1Lk/veBTf+keVggMqNI2jvtlMwHvRnnqa37YqJ7SLI9effZPcaSNWZTaELrCFkcteAxF+rQ5gikz14t8CmpuQoodtV6OrCX4mevBGb2+edrqEwPZDA+i04HFm1Rri1QCsmJgbbmEXJ2rVo+dO/Ra6QTZjQJfmlPTU+3n9QNEtjTMl/A5OeQYHtyfSaHDRHkTOio0hj0ADd7uvYFVL8oYywi2uRrQ+7XRS799/QwQc0CXurzz10uPLXew3P2ijlVqv+jLcoVAR9TM9DmWxtexvBHksrdVXoPa8HQSsrMZpv0vXZKa8Xl4HZ6ajd7WuZnGL6PYSTWNa3tLTlfn9APb4QQRy35P+AVD9dNIWpp1SolHuNCNr6q4rLO+Bci7bxbTfXJJ4Hr+/n3TyCiRz7YDri0wmss9XBfxwPb63jQACb/401zko8DFxFLmMNJ5R+20zI/tdMzk+xxtBRtlE8gZae1HGCnpb+HjeaS5BObjGbfz8oZMdDa4Y1goGvJqiINTzm0AN9HYsI+08zGA3crhxQ25z5gfhHnTQE094YscBayqdsfVwFzPT3zcRV6rM97uKe3AbciGTpl8+aPMdUzh1z6BRJmrNfee3nAkCHBZ8jxGUZnFtrp9mGsnUvCLiafXEk62ck6IJVtgdxoDOOw0X4YDsHad5M0ETlkj9T0M+W8kbBsjMymbA6txVSeJpcPrzk3ACciSmvaJFy4Y3/g6+hLkn4cEaD3mX+dcyGGQr/6XdxkpMmdwL2D/PeNblJ4RNlr733rrwL+jMTAS+UZT2/3AW5Sug24C9GWWeXGoigru8lAmyvosNO5gaS9vOjMyUp/ShKnnkDEBKz5ClljIb+e7u6NpLFYWsAMIema2/Y2bs31MZr/YUgtrEpKFof2cNteZ2ttMJW1YaVbKl/n8TM+hKSd3eQmhEq9q72QOO+nqjA+d1K48jKBfn/BDoprKPsXN4HM9PDsY4GLgRPK9KBXIGmP2oxyE9MUZzhec+PVQxFyGG9dzuW7byabOoWkeWe/3qkPbB+DG2EwDAWGvuW/5zfzZAe7r+4IViclv856uNdArbkZ2b3f3+NnDAe+hpQ9zwF+AcyjuBh4hMSX3+uM8mHoprANxBtFesVfBD6g/NnXUrw07BXAR4B9PIzB8cgGaal1F2uQOPnbPX9HI0qdGN9ioM3VrLJn2EtImBtiY4xKmSQiCyvTlq7IEHky0CHNrtZ0AV8FHgZaPX9WO1K1djSw2i2FFwP/dN78BvcLHYIIy++ANAQY54x8NbkM+EeBc3ZAv7/g80gmRbFsAE5FSvi1v7/e1cE8Sm9rdp9bPcWK/9wQac3+gA2pY0mZ95Kts1e3x8Ay56z4SIkLHnRcmO9CHdVsZjoSUcGLoxLeo84wFXJ1ZruJRJNz3eRVCo85T/pcD2MxDtlL+EqJfzcHyQZpidMX+x9RWjOTbvKcSt52bEpbq4cjmYd/ZSzrE/rFKSGDI45c7ryeZud1ZOO00NruGOAo5c9+kPL1MGYhMWkfnFhGGOcZpDw+VvS7jWZm9zwB9nSS+Eu701XPk7S6lzJvZm5oH/lgpGNGNxJPfaGJxyCPaIosKnDe1uj3F+wCzqR8vYlOZOPMR9AwgWTMjCxxfXx9XRhoAHNp9kayfJtMzI1z7xM802rpivDmPQcvOo4sRaoA1zTp85+PFL0U4jL0UxNvRvQ2KmFuEaGZctnZjU+pYY55dWGgAUj3TKfH3kGmT5VenI7IhTaWtFhWZIzkKhu/RyBuzEMKFTY02XN/h+KEiCYjWS+aLENPBOkS/Ois4FYXh5a4KpuBfh9MPwbazKSbZPYLZPklafTFlCo9khZeyVieafUX2ggedD3wG+DzNE+OzQ+AqUX8In31F7wYHZlPgHUu1NHlYZySSApgKaltD+KvYlXZgxYj3Ul79rP0cCvpGIU2khaWpy1PDjGb4sPVOEKaXVy5w3mKHQ3+nDchm2DF5FhdgBRwaLIA0S7R5FFnSH2wK6Vni5yJZJrE30ADmOlsIMp+nqy9miSoa0eXFHO2YpyXZiyPDzNkqxB3Dh50vfALt6R/pUGf71KkE0wxtb6HoS9nmnPGy4e3eyH65fW9TAEOLuH8N5Dc92dr/YUXXQxtZpI1M3PTyOdPAttBqgYx50RejOTCNstfhhmybuVmTfWOQNz5PRJ3/HMDPdN65zWfRXEaDsORLAZt4afbXQjABx1IAUu3h2unnIdeioj+EuCj6HeV92OgNxnq8/M3kjfvx9rHyFTJm04AKQtrUvCnEZZFLqxRTc85eND1xGJEEP9a8Cr9VQ0WIRVuN5XwNzPQ7S8IkilzrudnfRj4tqdrv4vSe1AuRvKp764bAy3edHY+2fwkcvYsDK95MdS9m4ApC50R/HWo5aERsDwtZdy1MM7BQNcTHchG2mSK14mIEzlks+pg4I8l/N2BzhPV5kr8yHJuzgXAQk/X/qobn1L4F3Ak0mNxZbV/BGXrvZmZdJoZ+UuxuX3I5a/C2FfJOIOacClw5RxJC6l8ryqd5fFhlvtGwtNtEm+OqhzS6Hvkg9ZoHXIXont8KfWTLz0fERQ6idK6ffjoLwii8XFNlZ59rZtYfQhNZIBvIdoppZBF8rX3c3+/KvYGepOhPocl5mw7HZvfkxxTydtHMXSSRno29G4qRpt5xxFiyJPuSFjJM16VhIVDLA+OhPu3MDzdZuiK3uymbWt8FDEkTWD06u0ZVyHx232R/OHVMb3PRYhc5sHA78r4+6/hpxnADKqbHfOg+558sAey0VkOL7jVyV6IZvgC/MTM/b5o9hLGY6IDwO5P3uwObIs0UmwTT9SIsFFXBOsjWJuE1e5Yl4Bs5ApRYvb65G2WhB1vnlqxZIAz9kRfX+AU/Oofl8q7kMICzd/OGYh4TrUYixS3HE2FHS80flVIRd13kSyUdWVeZz9ECzqlfH/3Iptl1Y7lt7tx2dnTmE+icu2NBBLrP8iFTnZDGjK0g07v1ap4QvYyRmAZRXdyFK9khrM8NYTVUYq1aejEkHPPks6h21JWe71hskT5+81TKwZqgDkUeLfyuD6PXlGABkOA9yg/4xJqkxo3zL2onwDeh59OLQPxDPBbJH97roIB3MVNPNo7JU8gcdhasCPSJsyHY/oi+hkaSaQ4aCuk9+SWzli3ufCKKedGA4GArPAmAocgzQB2ci+YhsvQDSx3IYxHkWyFJ/DT6TrQQAQDHQj0zxjnwU1wy+yxzsMe7TzvFhdOiJCMix5ED6S3rdHLbvWzCMkieY4qbi4FGoN/AxDKTU22PJ5sAAAAAElFTkSuQmCC">
+    <img class="logo-dark" alt="UNext" src="data:image/png;base64,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">
+  </div>
+</header>
+<main>
+  <div class="steps">
+    <div><b>1</b>Fill the fields with your programme manager. Examples are pre-filled — replace them.</div>
+    <div><b>2</b>Prompt 1 → <strong>ChatGPT (Chat)</strong>, attach <code>spec_template.md</code>, answer its questions, save <code>spec.md</code>.</div>
+    <div><b>3</b>Prompt 2 → <strong>Codex app</strong>: critique the spec. Fix gaps.</div>
+    <div><b>4</b>Prompt 3 → <strong>Codex app</strong>: create the plan. Then follow Phase C in the steps guide.</div>
+  </div>
+  <div class="grid">
+    <form class="card" id="f" autocomplete="off" onsubmit="return false">
+      <h2>Your inputs</h2>
+      <h3>Team</h3><div class="row2"><div><label for="team">Team name</label><input id="team" value="Team 9"></div><div><label for="specid">Spec folder</label><input id="specid" value="009-dashboard"></div></div><div class="row2"><div><label for="owner">Spec owner</label><input id="owner" value="" placeholder="Name"></div><div><label for="sme">Programme manager</label><input id="sme" value="" placeholder="Name"></div></div><h3>Problem and users</h3><label for="problem">Problem today <span class="hint">— what is done manually, by whom, how long</span></label><textarea id="problem" style="min-height:84px">The programme manager assembles a weekly health view by copying numbers from many reports; signals in one area are not connected to others and risks surface late.</textarea><label for="users">Primary users and the decision supported</label><textarea id="users" style="min-height:92px">Programme manager — what needs attention this week
+Team leads — how their team compares with its own trend
+Quality lead — where quality and reliability risks cluster</textarea><label for="success">Success looks like</label><textarea id="success" style="min-height:84px">One-screen programme view refreshed from agent outputs in under 2 minutes; the programme manager&#x27;s own top-3 attention areas appear in the agent&#x27;s top 5.</textarea><h3>Inputs</h3><label for="inputs">Agent output files <span class="hint">— shared format: use_case, generated_at, period, kpis, top_items, risks, needs_human_review, run_id</span></label><textarea id="inputs" style="min-height:170px">outputs/uc1_scrum_master.json
+outputs/uc2_defect_hotspot.json
+outputs/uc3_ai_regulations.json
+outputs/uc4_field_issues.json
+outputs/uc5_pr_flow.json
+outputs/uc6_cicd_health.json
+outputs/uc7_mebef.json
+outputs/uc8_sbom_vuln.json</textarea><label for="stale">Missing or stale outputs</label><input id="stale" value="Older than 24 hours or missing → show &#x27;no data&#x27;; never estimate"><h3>Rules and definitions</h3><label for="kpis">KPI catalogue on the dashboard</label><textarea id="kpis" style="min-height:140px">Delivery: carry-over %, scope creep % (UC1); PR cycle time (UC5)
+Quality: MTTR, top hotspot (UC2); top field issues (UC4)
+Reliability: MEBEF and change (UC7)
+Engineering health: build success rate, flaky tests (UC6)
+Compliance &amp; security: potential regulatory gaps (UC3); open critical vulnerabilities (UC8)</textarea><label for="rag">RAG rule</label><textarea id="rag" style="min-height:84px">Use each agent&#x27;s own RAG; a tile is Red if any of its KPIs is Red, Amber if any is Amber.</textarea><label for="risk">Cross-agent risk rules</label><textarea id="risk" style="min-height:92px">Same subsystem or component Red in 2 or more agents → &#x27;Attention&#x27;
+Open critical vulnerability in a release with falling MEBEF → &#x27;Attention&#x27;
+Rising carry-over plus falling build success for 2 weeks → &#x27;Delivery risk&#x27;</textarea><label for="tests">Golden questions with the expert&#x27;s answers <span class="hint">— 2–3; they become eval cases</span></label><textarea id="tests" style="min-height:92px">What needs attention this week? → PM&#x27;s own top 3 for the sample week in data/golden/week45.md
+Which areas are Red in more than one agent? → PM expects Gradient subsystem (UC2 + UC7)
+TBD — PM to provide a third</textarea><h3>Models and limits</h3><div class="row2"><div><label for="orch">Orchestrator model</label><select id="orch"><option>Claude Sonnet 5.5</option><option>GPT-5.5</option><option>GPT 5.6 Luna</option></select></div><div><label for="fast">Fast model (classification, summaries)</label><select id="fast"><option>Claude Haiku 5.5</option><option>GPT-4.1</option></select></div></div><label for="never">The agent must never <span class="hint">— one per line</span></label><textarea id="never" style="min-height:116px">Show a number that does not come from an agent output
+Recalculate another agent&#x27;s metric differently
+Hide or soften a Red signal from any agent
+Rank teams or individuals against each other</textarea>
+    </form>
+    <div class="out">
+      <section class="card">
+        <div class="tabs" role="tablist">
+          <button role="tab" aria-selected="true" data-t="p1">1 · Draft spec</button>
+          <button role="tab" aria-selected="false" data-t="p2">2 · Critique</button>
+          <button role="tab" aria-selected="false" data-t="p3">3 · Plan</button>
+        </div>
+        <p class="where" id="where"></p>
+        <pre id="prompt" aria-live="polite"></pre>
+        <div class="actions">
+          <button class="btn" id="copy" type="button">Copy prompt</button>
+          <button class="btn ghost" id="dl" type="button">Download .txt</button>
+          <button class="btn ghost" id="reset" type="button">Reset examples</button>
+        </div>
+        <div class="note"><b>Before you paste:</b> no keys, no personal names, no patient or customer data. Names, IDs, numbers and thresholds shown are examples — your expert confirms the real values; anything unknown stays TBD.</div>
+      </section>
+    </div>
+  </div>
+</main>
+<footer>UNext · Philips MR Advanced Agentic AI Program · 4–5 November 2026 · Built for the Codex app and ChatGPT Enterprise.</footer>
+<div class="toast" id="toast">Copied</div>
+<script>
+var CFG = {"n": 9, "slug": "dashboard", "title": "Dashboard Orchestrator", "persona": "a programme manager who also designs engineering dashboards", "expert": "Programme manager", "caps": ["Orchestrate outputs from the other eight agents.", "Provide an integrated view of team and programme health, key trends and risks.", "Highlight areas requiring attention."], "agents": "Collector (loads each output file and validates it against the shared schema in code), Normaliser (aligns periods and units in code), Risk Correlator (applies cross-agent rules in code; the LLM explains connections), Narrative Writer (weekly summary with links to sources), Report node", "nodes": "Collector, Normaliser, Risk Correlator, Narrative Writer, Report", "tools": "list_agent_outputs(), get_agent_output(use_case), get_kpi_history(metric, last_n<=12)", "gate": "the programme manager reviews the weekly narrative before it is shared", "kpis": "__DASH__", "ui": "tile per area with RAG and trend, 'needs attention' list, cross-agent risk view, drill-down to each agent's output and source", "extra": ["Write outputs/uc9_dashboard.json with the combined view, and keep every tile traceable to the agent output and run_id it came from."], "critique": ["every dashboard number is traceable to an agent output and run_id", "missing and stale inputs are handled explicitly", "cross-agent rules are deterministic and testable"], "groups": [["Problem and users", [{"id": "problem", "plabel": "Problem today", "kind": "area"}, {"id": "users", "plabel": "Primary users and the decision supported", "kind": "list"}, {"id": "success", "plabel": "Success looks like", "kind": "area"}]], ["Inputs", [{"id": "inputs", "plabel": "Agent output files", "kind": "list"}, {"id": "stale", "plabel": "Missing or stale outputs", "kind": "text"}]], ["Rules and definitions", [{"id": "kpis", "plabel": "KPI catalogue on the dashboard", "kind": "list"}, {"id": "rag", "plabel": "RAG rule", "kind": "area"}, {"id": "risk", "plabel": "Cross-agent risk rules", "kind": "list"}, {"id": "tests", "plabel": "Golden questions with the expert's answers", "kind": "list"}]]], "ids": ["team", "specid", "owner", "sme", "problem", "users", "success", "inputs", "stale", "kpis", "rag", "risk", "tests", "orch", "fast", "never"]};
+
+(function(){
+  var ids=CFG.ids, defaults={}, KEY="unext-spec-uc"+CFG.n+"-v1", current="p1";
+  function el(id){return document.getElementById(id);}
+  ids.forEach(function(id){defaults[id]=el(id).value;});
+  try{var saved=JSON.parse(localStorage.getItem(KEY)||"null");if(saved){ids.forEach(function(id){if(saved[id]!=null)el(id).value=saved[id];});}}catch(e){}
+  function v(id){var x=el(id).value.trim();return x||"TBD";}
+  function list(id,prefix){return v(id).split(/\n+/).map(function(s){return s.trim();}).filter(Boolean).map(function(s){return (prefix==null?"- ":prefix)+s;}).join("\n");}
+  function sub(s){return s.replace(/\{\{(\w+)\}\}/g,function(m,k){return el(k)?v(k):m;});}
+  function out(){return "outputs/uc"+CFG.n+"_"+CFG.slug+".json";}
+  function p1(){
+    var L=[
+"You are helping a team write an executable specification (spec.md) for an AI agent. The spec will be handed to the Codex app, which builds the agent from it. Act as "+CFG.persona+".",
+"",
+"HOW TO WORK",
+"1. First, ask me up to 8 clarifying questions in ONE message — only about things that block a precise spec. Wait for my answers.",
+"2. Then write the complete spec.md following the attached spec_template.md (16 sections, same headings and order). If the template is not attached, use: 1 Problem and intent · 2 Scope · 3 User stories and acceptance criteria · 4 Data · 5 Business rules and metric definitions · 6 Agent design · 7 MCP tools · 8 API and UI · 9 Output contract · 10 Guardrails and safety · 11 Non-functional requirements · 12 Evaluation · 13 Threat model and red-team cases · 14 Assumptions · 15 Open questions · 16 Hand-off to Codex.",
+"3. Never invent facts, formulas, IDs, numbers or thresholds. If something is not in my inputs, write TBD and add it to section 15 Open questions.",
+"4. Every acceptance criterion must be testable (Given / When / Then with observable results). Number them AC-1, AC-2, ...",
+"5. Output spec.md as a single markdown code block, ready to save as specs/"+v("specid")+"/spec.md.",
+"",
+"USE CASE",
+"Use case "+CFG.n+" · "+CFG.title+" ("+v("team")+"). Spec owner: "+v("owner")+". "+CFG.expert+": "+v("sme")+".",
+"Capabilities required:"];
+    CFG.caps.forEach(function(c){L.push("- "+c);});
+    CFG.groups.forEach(function(g){
+      L.push("");L.push(g[0].toUpperCase());
+      g[1].forEach(function(f){
+        if(f.kind==="list"){L.push(f.plabel+":");L.push(list(f.id));}
+        else{L.push(f.plabel+": "+v(f.id));}
+      });
+    });
+    L.push("","DESIGN CONSTRAINTS (from the workshop AGENTS.md — reflect them in sections 6–11)",
+"- Supervisor pattern in LangGraph. Suggested agents: "+CFG.agents+". Adjust if my answers suggest a better split.",
+"- Models on Azure: orchestrator "+v("orch")+"; fast model "+v("fast")+"; GPT-4.1 as fallback.",
+"- Read-only MCP tools only, each with a Pydantic input schema and limits, e.g. "+CFG.tools+". No tool writes to any external system.",
+"- Counts, durations, scores and rankings are computed in code; the LLM summarises, classifies and explains.",
+"- Every claim cites a source record ID, file or section. No source, no claim.",
+"- Human gate: "+sub(CFG.gate)+".",
+"- Guardrails: Azure AI Content Safety — Prompt Shields on user input and on all record free text (document attacks); harm and PII checks on output; app layers L1–L4 as in AGENTS.md.");
+    if(CFG.kpis==="__DASH__"){L.push("- Output (section 9): read the eight agent output files in the shared format and write outputs/uc9_dashboard.json with the combined view.");}
+    else{L.push("- Output contract (section 9): write "+out()+" in the shared format (use_case, generated_at, period, kpis, top_items, risks, needs_human_review, run_id) so the Dashboard Orchestrator can combine it. Suggested KPIs: "+CFG.kpis+".");}
+    L.push("- Streamlit UI: "+CFG.ui+".");
+    CFG.extra.forEach(function(x){L.push("- "+sub(x));});
+    L.push("","THE AGENT MUST NEVER",list("never"),"","Start with your clarifying questions.");
+    return L.join("\n");
+  }
+  function p2(){
+    var L=["Review specs/"+v("specid")+"/spec.md against spec_template.md and AGENTS.md in this folder.","Do not edit any file.","",
+"Give me a table with columns: section | problem | why it matters | suggested fix.","Flag specifically:",
+"- any fact, number, ID or threshold not traceable to our inputs (possible invention)",
+"- acceptance criteria that cannot be tested automatically",
+"- MCP tools without input limits, or any tool that could write to an external system",
+"- metrics the LLM would compute instead of code"];
+    CFG.critique.forEach(function(c){L.push("- "+c);});
+    L.push("- golden cases in section 12 without an expected answer from the "+CFG.expert.toLowerCase(),"- every TBD, with who should answer it","","End with: READY FOR PLAN = yes/no, and the top 3 fixes.");
+    return L.join("\n");
+  }
+  function p3(){
+    return ["Read AGENTS.md and specs/"+v("specid")+"/spec.md.","Create specs/"+v("specid")+"/plan.md using the format in AGENTS.md section 9.","","Include:",
+"- the LangGraph state and each agent node ("+CFG.nodes+") with its typed input/output model",
+"- the read-only MCP tools with their Pydantic schemas and limits",
+"- how the files in data/ are loaded and validated against the data dictionary",
+"- which steps are pure code and which call a model: "+v("orch")+" for orchestration, "+v("fast")+" for classification and summaries, GPT-4.1 fallback, via the Azure adapters",
+"- where guardrail layers L1–L4 sit (Azure AI Content Safety at L1 and L3)",
+"- how the golden cases from spec section 12 become evals/golden_set.jsonl",
+(CFG.kpis==="__DASH__"?"- how each agent output file is validated, and what the dashboard shows when one is missing or stale":"- how "+out()+" is produced for the Dashboard Orchestrator"),
+"","Do not write any code. Stop after plan.md and list open questions."].join("\n");
+  }
+  var meta={p1:"Paste into <b>ChatGPT (Chat)</b> with spec_template.md attached. Answer its questions with your "+CFG.expert.replace(/[<>&]/g,"")+", then save the result as specs/{slug}/spec.md.",
+            p2:"Paste into the <b>Codex app</b> with your project folder open, after spec.md is saved.",
+            p3:"Paste into the <b>Codex app</b> once the spec owner has approved the spec. Review plan.md before asking for tasks.md."};
+  function render(){
+    el("prompt").textContent=current==="p1"?p1():current==="p2"?p2():p3();
+    el("where").innerHTML=meta[current].replace("{slug}",v("specid").replace(/[<>&"]/g,""));
+    try{var o={};ids.forEach(function(id){o[id]=el(id).value;});localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}
+  }
+  ids.forEach(function(id){el(id).addEventListener("input",render);el(id).addEventListener("change",render);});
+  var tabs=document.querySelectorAll(".tabs button");
+  Array.prototype.forEach.call(tabs,function(b){b.addEventListener("click",function(){current=b.getAttribute("data-t");Array.prototype.forEach.call(tabs,function(x){x.setAttribute("aria-selected",x===b?"true":"false");});render();});});
+  function toast(m){var t=el("toast");t.textContent=m;t.classList.add("show");setTimeout(function(){t.classList.remove("show");},1400);}
+  el("copy").addEventListener("click",function(){
+    var text=el("prompt").textContent;
+    function fb(){var ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");toast("Copied");}catch(e){toast("Select the text and copy manually");}document.body.removeChild(ta);}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){toast("Copied");},fb);}else{fb();}
+  });
+  el("dl").addEventListener("click",function(){
+    var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([el("prompt").textContent],{type:"text/plain"}));
+    a.download="uc"+CFG.n+"_"+CFG.slug+"_prompt_"+current+".txt";document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);
+  });
+  el("reset").addEventListener("click",function(){ids.forEach(function(id){el(id).value=defaults[id];});try{localStorage.removeItem(KEY);}catch(e){}render();toast("Examples restored");});
+  render();
+})();
+
+</script>
+</body>
+</html>
